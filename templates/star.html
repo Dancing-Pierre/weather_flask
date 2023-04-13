@@ -1,0 +1,64 @@
+{% extends 'base.html' %}
+{% block content %}
+
+
+
+    <div class="site-section">
+      <div class="container">
+        
+        <div id="pie" style="width: 1200px;height:800px;"></div>
+        
+      </div>
+    </div>
+
+    <script>
+        var chartDom = document.getElementById('pie');
+var myChart = echarts.init(chartDom);
+var option;
+
+option = {
+  title: {
+    text: '空气质量类型分析',
+    subtext: '牡丹经地区2018年至今空气质量',
+    left: 'center'
+  },
+  tooltip: {
+    trigger: 'item'
+  },
+  legend: {
+    orient: 'vertical',
+    left: 'left'
+  },
+  series: [
+    {
+      name: '数量',
+      type: 'pie',
+      radius: '50%',
+      data: [
+          {% for i in star_count %}
+              { value: {{i[1]}}, name: '{{i[0]}}' },
+          {% endfor %}
+
+      ],
+      emphasis: {
+        itemStyle: {
+          shadowBlur: 10,
+          shadowOffsetX: 0,
+          shadowColor: 'rgba(0, 0, 0, 0.5)'
+        }
+      }
+    }
+  ]
+};
+
+option && myChart.setOption(option);
+    </script>
+
+       
+    
+
+
+    
+    
+
+{% endblock %}

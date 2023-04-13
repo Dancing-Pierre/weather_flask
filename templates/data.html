@@ -1,0 +1,60 @@
+{% extends 'base.html' %}
+{% block content %}
+  
+
+    <script src="static/css/layui/layui.js" charset="utf-8"></script>
+    <link rel="stylesheet" href="static/css/layui/css/layui.css">
+    <script src="static/css/layui/layui.all.js" charset="utf-8"></script>
+    <style>
+    .ibutton { padding: 3px 15px; *padding: 0 15px; *height: 24px;  font-size: 12px; text-align: center; text-shadow: #CF510B 0 1px 0; border:1px solid #ec5c0d; border-radius: 2px; background: #FC750A; background-image: -webkit-linear-gradient(top, #fc8746, #ec5d0e); color:#FFF; cursor: pointer; display: inline-block; }
+    </style>
+    <div class="site-section">
+        <div class="container">
+
+     <table class="layui-table">
+        <thead>
+        <tr>
+
+            <th>日期</th>
+            <th>最高温度</th>
+            <th >最低温度</th>
+            <th >天气</th>
+            <th >风向</th>
+            <th >风力</th>
+            <th >aqi</th>
+            <th >aqiinfo</th>
+            <th >aqilevel</th>
+            <th >city</th>
+
+
+        </tr>
+        </thead>
+        <tbody>
+        {% for i in films %}
+            <tr>
+
+
+                <td>{{ i[1] }}</td>
+                <td>{{ i[2] }}</td>
+                <td>{{ i[3] }}</td>
+                <td>{{ i[4] }}</td>
+                <td>{{ i[5] }}</td>
+                <td>{{ i[6] }}</td>
+                <td>{{ i[7] }}</td>
+                <td>{{ i[8] }}</td>
+                <td>{{ i[9] }}</td>
+                <td>{{ i[10] }}</td>
+
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+    <!--分页-->
+    <div class="page">{{ paginate.links }}</div>
+
+      </div>
+ </div>
+
+
+    
+{% endblock %}

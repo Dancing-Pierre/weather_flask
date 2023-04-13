@@ -1,0 +1,81 @@
+{% extends 'base.html' %}
+{% block content %}
+
+
+    <div class="site-section">
+      <div class="container">
+        
+        <div>
+            <div id="main" style="width: 1200px;height:800px;">
+        </div>
+        
+      </div>
+    </div>
+<script>
+    var chartDom = document.getElementById('main');
+var myChart = echarts.init(chartDom);
+var option;
+
+option = {
+  title: {
+    text: '风向分析',
+    subtext: '牡丹江地区2018年至今所有风向信息统计'
+  },
+  tooltip: {
+    trigger: 'axis'
+  },
+  legend: {
+    data: ['数量', '风向']
+  },
+  toolbox: {
+    show: true,
+    feature: {
+      dataView: { show: true, readOnly: false },
+      magicType: { show: true, type: ['line', 'bar'] },
+      restore: { show: true },
+      saveAsImage: { show: true }
+    }
+  },
+  calculable: true,
+  xAxis: [
+    {
+      type: 'category',
+      // prettier-ignore
+      data: {{ people_max_val|tojson }}
+    }
+  ],
+  yAxis: [
+    {
+      type: 'value'
+    }
+  ],
+  series: [
+    {
+      name: '数量',
+      type: 'bar',
+      data: {{ people_max_num }},
+      markPoint: {
+        data: [
+          { type: 'max', name: 'Max' },
+          { type: 'min', name: 'Min' }
+        ]
+      },
+      markLine: {
+        data: [{ type: 'average', name: 'Avg' }]
+      }
+    }
+  ]
+};
+
+option && myChart.setOption(option);
+</script>
+    
+ </div>
+       
+    
+
+
+    
+    
+
+{% endblock %}

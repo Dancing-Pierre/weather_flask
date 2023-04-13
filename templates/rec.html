@@ -1,0 +1,64 @@
+{% extends 'base.html' %}
+{% block content %}
+
+
+
+    <div class="site-section">
+      <div class="container">
+            <div id="main" style="width: 1200px;height: 500px"></div>
+        <script>
+           var chartDom = document.getElementById('main');
+var myChart = echarts.init(chartDom);
+var option;
+option = {
+  title: {
+    text: '牡丹江近300天空气质量指数变化'
+  },
+  tooltip: {
+    trigger: 'axis'
+  },
+  legend: {},
+  xAxis: {
+    type: 'category',
+    boundaryGap: false,
+    data: {{ val|tojson }}
+  },
+  yAxis: {
+    type: 'value'
+  },
+  series: [
+    {
+      name: '',
+      type: 'line',
+      data:  {{ num_high }},
+      markPoint: {
+        data: [
+          { type: 'max', name: 'Max' },
+          { type: 'min', name: 'Min' }
+        ]
+      },
+      markLine: {
+        data: [{ type: 'average', name: 'Avg' }]
+      }
+    }
+  ]
+};
+
+option && myChart.setOption(option);
+
+
+       </script>
+        
+      </div>
+        <div style="margin-left: 10%">
+                            <h2 style="margin-left: 10%">Holt-Winter 季节性平滑法预测</h2>
+                            <img src="static/image/Holt.jpg">
+                        </div>
+    </div>
+
+    
+
+       
+    
+
+{% endblock %}

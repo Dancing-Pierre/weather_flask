@@ -1,0 +1,45 @@
+	/*
+  	Flaticon icon font: Flaticon
+  	Creation date: 24/09/2018 04:43
+  	*/
+
+@font-face {
+  font-family: "Flaticon";
+  src: url("../font/Flaticon.eot");
+  src: url("../font/Flaticon.eot") format("embedded-opentype"),
+       url("../font/Flaticon.woff") format("woff"),
+       url("../font/Flaticon.ttf") format("truetype"),
+       url("https://www.17sucai.com/preview/2413762/2021-12-01/yunfuwu%20mb2/%E2%95%98%E2%95%9E%E2%95%96%E2%96%A0%E2%95%AC%C2%B1%E2%95%A7%E2%88%9E%E2%95%99%C2%AA%E2%95%A9%E2%95%9C%E2%94%80%C3%BA%E2%96%91%CF%832/fonts/flaticon/font/Flaticon.svg") format("svg");
+  font-weight: normal;
+  font-style: normal;
+}
+
+@media screen and (-webkit-min-device-pixel-ratio:0) {
+  @font-face {
+    font-family: "Flaticon";
+    src: url("https://www.17sucai.com/preview/2413762/2021-12-01/yunfuwu%20mb2/%E2%95%98%E2%95%9E%E2%95%96%E2%96%A0%E2%95%AC%C2%B1%E2%95%A7%E2%88%9E%E2%95%99%C2%AA%E2%95%A9%E2%95%9C%E2%94%80%C3%BA%E2%96%91%CF%832/fonts/flaticon/font/Flaticon.svg") format("svg");
+  }
+}
+
+[class^="flaticon-"]:before, [class*=" flaticon-"]:before,
+[class^="flaticon-"]:after, [class*=" flaticon-"]:after {   
+  font-family: Flaticon;
+  speak: none;
+  font-style: normal;
+  font-weight: normal;
+  font-variant: normal;
+  text-transform: none;
+  line-height: 1;
+
+  /* Better Font Rendering =========== */
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+.flaticon-worker:before { content: "\f100"; }
+.flaticon-industry:before { content: "\f101"; }
+.flaticon-industrial-robot:before { content: "\f102"; }
+.flaticon-excavator:before { content: "\f103"; }
+.flaticon-gears:before { content: "\f104"; }
+.flaticon-agreement:before { content: "\f105"; }
+.flaticon-planet-earth:before { content: "\f106"; }

@@ -1,0 +1,91 @@
+{% extends 'base.html' %}
+{% block content %}
+
+
+    <div class="site-section">
+      <div class="container">
+
+ <div id="main" style="width: 1200px;height:800px;"></div>
+
+      </div>
+    </div>
+
+    
+<script>
+    var chartDom = document.getElementById('main');
+var myChart = echarts.init(chartDom);
+var option;
+
+option = {
+  title: {
+    text: '黑龙江各地区今日温度',
+    subtext: ''
+  },
+  tooltip: {
+    trigger: 'axis'
+  },
+  legend: {
+    data: ['最高温度', '最低温度']
+  },
+  toolbox: {
+    show: true,
+    feature: {
+      dataView: { show: true, readOnly: false },
+      magicType: { show: true, type: ['line', 'bar'] },
+      restore: { show: true },
+      saveAsImage: { show: true }
+    }
+  },
+  calculable: true,
+  xAxis: [
+    {
+      type: 'category',
+      // prettier-ignore
+      data: {{ val|tojson }}
+    }
+  ],
+  yAxis: [
+    {
+      type: 'value'
+    }
+  ],
+  series: [
+    {
+      name: '最高温度',
+      type: 'bar',
+      data: {{ num_high|tojson }},
+      markPoint: {
+        data: [
+          { type: 'max', name: 'Max' },
+          { type: 'min', name: 'Min' }
+        ]
+      },
+      markLine: {
+        data: [{ type: 'average', name: 'Avg' }]
+      }
+    },
+    {
+      name: '最低温度',
+      type: 'bar',
+      data: {{ num_low|tojson }},
+      markPoint: {
+        data: [
+          { name: 'Max', value: 182.2, xAxis: 7, yAxis: 183 },
+          { name: 'Min', value: 2.3, xAxis: 11, yAxis: 3 }
+        ]
+      },
+      markLine: {
+        data: [{ type: 'average', name: 'Avg' }]
+      }
+    }
+  ]
+};
+
+option && myChart.setOption(option);
+</script>
+       
+    
+
+
+    
+{% endblock %}
