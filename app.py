@@ -1,11 +1,16 @@
+import datetime
+
 import pandas as pd
+import pymysql
+from sqlalchemy import create_engine
 from flask import Flask, render_template, session, redirect, url_for, request
 from functools import wraps
 from flask_paginate import Pagination
+
+from forecast.forecast import pred_sea
 from models import *
 import random
-import csv
-import os
+from forecast import forecast
 
 import requests
 from lxml import etree
@@ -17,6 +22,7 @@ app.secret_key = "lycsdf"
 app.config['SESSION_COOKIE_NAME'] = "session_key"
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = True
 db.init_app(app)
+engine = create_engine(app.config['SQLALCHEMY_DATABASE_URI'])
 
 city_data = {'北京': 'beijing', '天津': 'tianjin', '上海': 'shanghai', '重庆': 'chongqing', '广州': 'guangzhou',
              '深圳': 'shenzhen', '杭州': 'hangzhou', '成都': 'chengdu', '石家庄': 'shijiazhuang',
@@ -154,14 +160,15 @@ header = {
     "User-Agent": random.choice(ua_all),
 }
 
-
-def read_data_from_csv(city, date):
-    with open('data.csv', 'r') as file:
-        reader = csv.reader(file)
-        for row in reader:
-            if row[0] == city and row[1] == date:
-                return row[2], row[3], row[4]
-        return None
+conn = pymysql.Connection(
+    host='localhost',
+    port=3306,
+    user='root',
+    password='123456',
+    charset='utf8',
+    db='tianqi',
+)
+cursor = conn.cursor()
 
 
 def get_data(city, city_pinyin, date):
@@ -177,20 +184,12 @@ def get_data(city, city_pinyin, date):
         aqi = ''.join(i.xpath('./td[3]//text()')).replace(" ", "").replace("\n", "").replace("\r", "")
         pm25 = ''.join(i.xpath('./td[5]//text()')).replace(" ", "").replace("\n", "").replace("\r", "")
         pm10 = ''.join(i.xpath('./td[6]//text()')).replace(" ", "").replace("\n", "").replace("\r", "")
-        write_data_to_csv(city, date, aqi, pm25, pm10)
+        write_data_to_db(city, date, aqi, pm25, pm10)
 
 
-def write_data_to_csv(city, date, aqi, pm25, pm10):
-    with open('data.csv', 'a', newline='') as file:
-        writer = csv.writer(file)
-        writer.writerow([city, date, aqi, pm25, pm10])
-
-
-if not os.path.isfile('data.csv'):
-    with open('data.csv', 'w', newline='') as file:
-        writer = csv.writer(file)
-        writer.writerow(['城市', '日期', 'aqi', 'pm2.5', 'pm10'])
-        # 如果CSV文件不存在，则创建文件，并写入表头
+def write_data_to_db(city, date, aqi, pm25, pm10):
+    cursor.execute("INSERT INTO data (城市, 日期, aqi, `pm2.5`, pm10) VALUES (%s, %s, %s, %s, %s)",
+                   (city, date, aqi, pm25, pm10))
 
 
 def user_login(f):
@@ -219,12 +218,16 @@ def login_post():
     results = User.query.filter(User.username == username).first()
     if results:
         if results.password == password:
-            session['uname'] = str(username)
-            return render_template('home.html')
+            session['uname'] = username
+            if username == 'admin':
+                session['cate'] = 2
+            else:
+                session['cate'] = 1
+            return render_template('index.html')
         else:
-            return '密码错误'
+            return render_template('login.html', login_result='密码错误')
     else:
-        return '用户不存在'
+        return render_template('login.html', login_result='用户不存在')
 
 
 @app.route('/register', methods=['POST', 'Get'])
@@ -234,7 +237,8 @@ def register():
         password = request.form['password']
         results = User.query.filter(User.username == username).first()
         if results:
-            return '用户已存在，请重新注册'
+            result = '用户已存在，请重新注册'
+            return render_template('register.html', login_result=result)
         else:
             new_user1 = User(username=username, password=password)
             db.session.add(new_user1)
@@ -252,36 +256,27 @@ def logout():
 
 
 @app.route('/index')
-def index():
-    return render_template('index.html')
-
-
-@app.route('/score')
-def score():
-    data = pd.read_csv('clean.csv')
-    data = data[data['city'] == '牡丹江']
-    counts = data['天气'].value_counts().sort_values(ascending=False)
-    score_count = []
-    for item in range(len(list(counts.index)) - 30):
-        score_count.append((list(counts.index)[item], list(counts)[item]))
-    return render_template('score.html', score_count=score_count)
+def index():    return render_template('index.html')
 
 
 @app.route('/people')
 def people():
-    data = pd.read_csv('clean.csv')
-    data = data[data['city'] == '牡丹江']
+    query = "SELECT * FROM clean WHERE city = '牡丹江'"
+    data = pd.read_sql_query(query, engine)
     data1 = data['风向'].value_counts()
     people_max_val = list(data1.index)
     people_max_num = list(data1)
-
+    print(people_max_val)
+    print(people_max_num)
     return render_template('people.html', people_max_val=people_max_val, people_max_num=people_max_num)
 
 
 @app.route('/star')
 def star():
-    data = pd.read_csv('clean.csv')
-    data = data[data['city'] == '牡丹江']
+    # data = pd.read_csv('clean.csv')
+    # data = data[data['city'] == '牡丹江']
+    query = "SELECT * FROM clean WHERE city = '牡丹江'"
+    data = pd.read_sql_query(query, engine)
     counts = data['aqiinfo'].value_counts()
     star_count = []
     for item in range(len(list(counts.index))):
@@ -291,18 +286,21 @@ def star():
 
 @app.route('/rec')
 def rec():
-    data = pd.read_csv('clean.csv')
-    data = data[data['city'] == '牡丹江']
+    # data = pd.read_csv('clean.csv')
+    # data = data[data['city'] == '牡丹江']
+    query = "SELECT * FROM clean WHERE city = '牡丹江'"
+    data = pd.read_sql_query(query, engine)
     val = list(data['日期'])[-300:]
     num_high = list(data['aqi'])[-300:]
-
     return render_template('rec.html', val=val, num_high=num_high)
 
 
 @app.route('/cloud')
 def cloud():
-    data = pd.read_csv('clean.csv')
-    data = data[data['city'] == '牡丹江']
+    # data = pd.read_csv('clean.csv')
+    # data = data[data['city'] == '牡丹江']
+    query = "SELECT * FROM clean WHERE city = '牡丹江'"
+    data = pd.read_sql_query(query, engine)
     counts = data.sort_values(by='日期', ascending=True)
     # counts=counts.head(50)
     val = list(counts['日期'])[-300:]
@@ -313,8 +311,10 @@ def cloud():
 
 @app.route('/diqu')
 def diqu():
-    data = pd.read_csv('clean.csv')
-    data = data[data['日期'] == '2023-02-26']
+    # data = pd.read_csv('clean.csv')
+    # data = data[data['日期'] == '2023-02-26']
+    query = "SELECT * FROM clean WHERE 日期 = '2023-02-26'"
+    data = pd.read_sql_query(query, engine)
 
     val = list(data['city'])
     num_high = list(data['最高温度'])
@@ -324,10 +324,13 @@ def diqu():
 
 @app.route('/data')
 def data():
-    df = pd.read_csv('weatherdata.csv')
-    values = []
-    for i, r in df.iterrows():
-        values.append(r)
+    # df = pd.read_csv('weatherdata.csv')
+    # values = []
+    # for i, r in df.iterrows():
+    #     values.append(r)
+    query = "SELECT * FROM weatherdata"
+    data = pd.read_sql_query(query, engine)
+    values = data.to_dict('records')
     limit = 15
     page = int(request.args.get("page", 1))
     start = (page - 1) * limit
@@ -337,15 +340,15 @@ def data():
     end = page * limit if row > page * limit else row
     paginate = Pagination(page=page, per_page=limit, total=row)
     ret = values[start:end]
+    print(ret)
     return render_template('data.html', films=ret, paginate=paginate)
 
 
 @app.route('/clean')
 def clean():
-    df = pd.read_csv('clean.csv')
-    values = []
-    for i, r in df.iterrows():
-        values.append(r)
+    query = "SELECT * FROM weatherdata WHERE 日期 IS NOT NULL AND 最高温度 IS NOT NULL AND 最低温度 IS NOT NULL AND 天气 IS NOT NULL AND 风向 IS NOT NULL AND 风力 IS NOT NULL AND aqi IS NOT NULL AND aqiinfo IS NOT NULL AND aqilevel IS NOT NULL AND city IS NOT NULL"
+    data = pd.read_sql_query(query, engine)
+    values = data.to_dict('records')
     limit = 15
     page = int(request.args.get("page", 1))
     start = (page - 1) * limit
@@ -366,20 +369,81 @@ def view():
         city = form.city.data
         date = form.date.data
         while True:
-            data = read_data_from_csv(city, date)
-            if data:
-                data_form = {'city': city, 'AQI': data[0], 'PM25': data[1],
-                             'PM10': data[2], 'province': find_province(city)}
-                print(data_form)
-                # return render_template('view.html', form=data_form)
+            query = "SELECT * FROM data WHERE 城市='%s' and 日期='%s'" % (city, date)
+            cursor.execute(query)
+            result = cursor.fetchone()
+            if result:
+                data_form = {'city': city, 'AQI': result[2], 'PM25': result[3],
+                             'PM10': result[4], 'province': find_province(city)}
                 return render_template('view.html', form=SearchForm(), info=data_form)
             else:
                 city_pinyin = city_data[f'{city}']
                 get_data(city, city_pinyin, date)
         # 处理数据并返回结果
-
     else:
         return render_template('view.html', form=form)
+
+
+@app.route('/search', methods=['GET', 'POST'])
+def search():
+    search_name = request.args.get("area")
+    if search_name:
+        query = f"SELECT * FROM weatherdata WHERE 日期 IS NOT NULL AND 最高温度 IS NOT NULL AND 最低温度 IS NOT NULL AND 天气 IS NOT NULL AND 风向 IS NOT NULL AND 风力 IS NOT NULL AND aqi IS NOT NULL AND aqiinfo IS NOT NULL AND aqilevel IS NOT NULL AND city = '{search_name}'"
+    else:
+        query = "SELECT * FROM weatherdata WHERE 日期 IS NOT NULL AND 最高温度 IS NOT NULL AND 最低温度 IS NOT NULL AND 天气 IS NOT NULL AND 风向 IS NOT NULL AND 风力 IS NOT NULL AND aqi IS NOT NULL AND aqiinfo IS NOT NULL AND aqilevel IS NOT NULL AND city IS NOT NULL"
+    data = pd.read_sql_query(query, engine)
+    values = data.to_dict('records')
+    limit = 15
+    page = int(request.args.get("page", 1))
+    start = (page - 1) * limit
+    # 返回数据
+    row = len(values)
+    print(row)
+    end = page * limit if row > page * limit else row
+    paginate = Pagination(page=page, per_page=limit, total=row)
+    ret = values[start:end]
+    print(ret)
+    return render_template('clean.html', films=ret, paginate=paginate)
+
+
+@app.route('/forecast_main', methods=['get'])
+def forecast_main():
+    return render_template('forecast.html')
+
+
+@app.route('/forecast', methods=['get', 'POST'])
+def forecast():
+    # 从前端接收数据
+    if request.form['city'] and request.form['year'] and request.form['month'] and request.form['day']:
+        city = int(request.form['city'])
+        year = int(request.form['year'])
+        month = int(request.form['month'])
+        day = int(request.form['day'])
+        dataX = [city, year, month, day]
+        print(data)
+        if year <= 2018:
+            result = f'年份太早'
+            return render_template('forecast.html', result=result)
+        elif year >= 2024:
+            result = f'年份太长，预测数据不准'
+            return render_template('forecast.html', result=result)
+        else:
+            if 1 <= month <= 12:
+                if 1 <= day <= 31:
+                    dataX = pd.DataFrame(dataX)
+                    dataX = dataX.T
+                    data_dict = pred_sea(dataX)
+                    return render_template('forecast.html', file=data_dict,
+                                           result=f'{year}年{month}月{day}日 后面三天的空气质量数据预测成功')
+                else:
+                    result = f'日期不存在！'
+                    return render_template('forecast.html', result=result)
+            else:
+                result = f'月份输入错误！'
+                return render_template('forecast.html', result=result)
+    else:
+        result = f'输入框不可为空'
+        return render_template('forecast.html', result=result)
 
 
 if __name__ == '__main__':

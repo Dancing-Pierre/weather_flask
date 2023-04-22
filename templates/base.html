@@ -1,13 +1,10 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
+<head>
     <title>空气质量数据分析</title>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-
-
     <link rel="stylesheet" href="static/css/style.css">
-
     <link rel="stylesheet" href="static/css/bootstrap.min.css">
     <link rel="stylesheet" href="static/css/magnific-popup.css">
     <link rel="stylesheet" href="static/css/jquery-ui.css">
@@ -15,162 +12,139 @@
     <link rel="stylesheet" href="static/css/owl.theme.default.min.css">
     <link rel="stylesheet" href="static/css/bootstrap-datepicker.css">
     <link rel="stylesheet" href="static/css/animate.css">
-    
-    
     <link rel="stylesheet" href="static/css/flaticon.css">
     <link rel="stylesheet" href="static/css/fl-bigmug-line.css">
-  
     <link rel="stylesheet" href="static/css/aos.css">
-
     <link rel="stylesheet" href="static/css/style1.css">
     <script src="https://cdn.bootcss.com/echarts/4.2.1-rc1/echarts.min.js"></script>
-  </head>
-  <body>
-  
-  <div class="site-wrap">
-
+</head>
+<body>
+<div class="site-wrap">
     <div class="site-mobile-menu">
-      <div class="site-mobile-menu-header">
-        <div class="site-mobile-menu-close mt-3">
-          <span class="icon-close2 js-menu-toggle"></span>
+        <div class="site-mobile-menu-header">
+            <div class="site-mobile-menu-close mt-3">
+                <span class="icon-close2 js-menu-toggle"></span>
+            </div>
         </div>
-      </div>
-      <div class="site-mobile-menu-body"></div>
+        <div class="site-mobile-menu-body"></div>
     </div> <!-- .site-mobile-menu -->
-    
-    
     <div class="site-navbar-wrap bg-white">
-      <div class="site-navbar-top">
-        <div class="container py-2">
-          <div class="row align-items-center">
-            
-            <div class="col-6 col-md-6 col-lg-2">
-              <a href="/home" class="d-flex align-items-center site-logo">
-                <span class="fl-bigmug-line-cube29 mr-3 cube-bg"></span>
-                <span>天气</span>
-              </a>
+        <div class="site-navbar-top">
+            <div class="container py-2">
+                <div class="row align-items-center">
+                    <div class="col-6 col-md-6 col-lg-2">
+                        <a href="/home" class="d-flex align-items-center site-logo">
+                            <span class="fl-bigmug-line-cube29 mr-3 cube-bg"></span>
+                            <span>天气</span>
+                        </a>
+                    </div>
+                    <div class="col-6 col-md-6 col-lg-10">
+                        <ul class="unit-4 ml-auto text-right">
+                            <li class="text-left">
+                                <a href="#">
+                                    <div class="d-flex align-items-center block-unit">
+                                        <div class="icon mr-0 mr-md-4">
+                                            <span class="fl-bigmug-line-headphones32 h3"></span>
+                                        </div>
+                                        <div class="d-none d-lg-block">
+                                            <span class="d-block text-gray-500 text-uppercase">联系电话</span>
+                                            <span class="h6">123456789</span>
+                                        </div>
+                                    </div>
+                                </a>
+                            </li>
+                            <li class="text-left">
+                                <a href="#">
+                                    <div class="d-flex align-items-center block-unit">
+                                        <div class="icon mr-0 mr-md-4">
+                                            <span class="fl-bigmug-line-email64 h5"></span>
+                                        </div>
+                                        <div class="d-none d-lg-block">
+                                            <span class="d-block text-gray-500 text-uppercase">Email</span>
+                                            <span class="h6">mail@123.com</span>
+                                        </div>
+                                    </div>
+                                </a>
+                            </li>
+                            <li class="text-left">
+                                <a href="/logout">
+                                    <div class="d-flex align-items-center block-unit">
+                                        <div class="d-none d-lg-block">
+                                            <span class="h6">退出登录</span>
+                                        </div>
+                                    </div>
+                                </a>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
             </div>
-
-            <div class="col-6 col-md-6 col-lg-10">
-              <ul class="unit-4 ml-auto text-right">
-
-                <li class="text-left">
-                  <a href="#">
-                    <div class="d-flex align-items-center block-unit">
-                      <div class="icon mr-0 mr-md-4">
-                        <span class="fl-bigmug-line-headphones32 h3"></span>
-                      </div>
-                      <div class="d-none d-lg-block">
-                        <span class="d-block text-gray-500 text-uppercase">联系电话</span>
-                        <span class="h6">123456789</span>
-                      </div>
-                    </div>
-                  </a>
-                </li>
-
-
-                <li class="text-left">
-                  <a href="#">
-                    <div class="d-flex align-items-center block-unit">
-                      <div class="icon mr-0 mr-md-4">
-                        <span class="fl-bigmug-line-email64 h5"></span>
-                      </div>
-                      <div class="d-none d-lg-block">
-                        <span class="d-block text-gray-500 text-uppercase">Email</span>
-                        <span class="h6">mail@123.com</span>
-                      </div>
-                    </div>
-                  </a>
-                </li>
-
-                <li class="text-left">
-<a href="/logout">
-                    <div class="d-flex align-items-center block-unit">
-                      <div class="d-none d-lg-block">
-                        <span class="h6">退出登录</span>
-                      </div>
-                    </div>
-                  </a>
-                </li>
-
-
-              </ul>
-            </div>
-
-            
-
-          </div>
-          
         </div>
-      </div>
-      <div class="site-navbar bg-dark">
-        <div class="container py-1">
-          <div class="row align-items-center">
-
-            <div class="col-4 col-md-4 col-lg-8">
-              <nav class="site-navigation text-left" role="navigation">
-                <div class="d-inline-block d-lg-none ml-md-0 mr-auto py-3"><a href="#" class="site-menu-toggle js-menu-toggle text-white"><span class="icon-menu h3"></span></a></div>
-
-                <ul class="site-menu js-clone-nav d-none d-lg-block">
-                  <li>
-                    <a href="/index">总览</a>
-                  </li>
-                  <li><a href="/score">天气统计</a></li>
-                  <li>
-                    <a href="/people">风向分析</a>
-                  </li>
-                  <li><a href="/star">空气质量</a></li>
-                  <li><a href="/rec">预测</a></li>
-                  <li> <a href="/cloud">温度变化</a></li>
-
-                  <li > <a href="/diqu">黑龙江不同地区今日温度</a></li>
-                                      <li> <a href="/data">数据爬取</a></li>
-                  <li> <a href="/clean">数据清洗</a></li>
-                    <li> <a href="/view">数据展示</a></li>
-                </ul>
-              </nav>
+        <div class="site-navbar bg-dark">
+            <div class="container py-1">
+                <div class="row align-items-center">
+                    <div class="col-4 col-md-4 col-lg-8">
+                        <nav class="site-navigation text-left" role="navigation">
+                            <div class="d-inline-block d-lg-none ml-md-0 mr-auto py-3"><a href="#"
+                                                                                          class="site-menu-toggle js-menu-toggle text-white"><span
+                                    class="icon-menu h3"></span></a></div>
+                            <ul class="site-menu js-clone-nav d-none d-lg-block">
+                                <li>
+                                    <a href="/index">总览</a>
+                                </li>
+                                <li>
+                                    <a href="/people">风向分析</a>
+                                </li>
+                                <li><a href="/star">空气质量</a></li>
+                                <li><a href="/rec">预测</a></li>
+                                <li><a href="/cloud">温度变化</a></li>
+                                <li><a href="/diqu">黑龙江不同地区今日温度</a></li>
+                                <li><a href="/data">数据爬取</a></li>
+                                <li><a href="/clean">数据清洗</a></li>
+                                <li><a href="/view">数据展示</a></li>
+                                <li><a href="/forecast_main">空气质量预测</a></li>
+                            </ul>
+                        </nav>
+                    </div>
+                </div>
             </div>
-
-
-          </div>
         </div>
-      </div>
     </div>
 
-  
-
-        {% block content %}
-
-        {% endblock %}
-    
 
 
-    
+    {% block content %}
+
+    {% endblock %}
+
+
+
+
 
     <footer class="site-footer">
-      <div class="container">
-        <div class="row pt-5 mt-5 text-center">
-          <div class="col-md-12">
-            <p>数据来源：中国天气网</p>          </div>
+        <div class="container">
+            <div class="row pt-5 mt-5 text-center">
+                <div class="col-md-12">
+                    <p>数据来源：中国天气网</p></div>
 
+            </div>
         </div>
-      </div>
     </footer>
-  </div>
+</div>
 
-  <script src="static/js/jquery-3.3.1.min.js"></script>
-  <script src="static/js/jquery-migrate-3.0.1.min.js"></script>
-  <script src="static/js/jquery-ui.js"></script>
-  <script src="static/js/popper.min.js"></script>
-  <script src="static/js/bootstrap.min.js"></script>
-  <script src="static/js/owl.carousel.min.js"></script>
-  <script src="static/js/jquery.stellar.min.js"></script>
-  <script src="static/js/jquery.countdown.min.js"></script>
-  <script src="static/js/jquery.magnific-popup.min.js"></script>
-  <script src="static/js/bootstrap-datepicker.min.js"></script>
-  <script src="static/js/aos.js"></script>
+<script src="static/js/jquery-3.3.1.min.js"></script>
+<script src="static/js/jquery-migrate-3.0.1.min.js"></script>
+<script src="static/js/jquery-ui.js"></script>
+<script src="static/js/popper.min.js"></script>
+<script src="static/js/bootstrap.min.js"></script>
+<script src="static/js/owl.carousel.min.js"></script>
+<script src="static/js/jquery.stellar.min.js"></script>
+<script src="static/js/jquery.countdown.min.js"></script>
+<script src="static/js/jquery.magnific-popup.min.js"></script>
+<script src="static/js/bootstrap-datepicker.min.js"></script>
+<script src="static/js/aos.js"></script>
 
-  <script src="static/js/main.js"></script>
+<script src="static/js/main.js"></script>
 
-  </body>
+</body>
 </html>

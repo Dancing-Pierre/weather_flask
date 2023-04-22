@@ -1,108 +1,88 @@
 {% extends 'base.html' %}
 {% block content %}
 
-  
-
-
     <div class="site-section">
-      <div class="container">
+        <div class="container">
 
- <div id="main" style="width: 1200px;height:800px;"></div>
+            <div id="main" style="width: 1200px;height:800px;"></div>
 
-      </div>
+        </div>
     </div>
 
-    
-<script>
-    var chartDom = document.getElementById('main');
-var myChart = echarts.init(chartDom);
-var option;
+    <script>
+        var chartDom = document.getElementById('main');
+        var myChart = echarts.init(chartDom);
+        var option;
 
-option = {
-  title: {
-    text: '牡丹江近300天温度变化'
-  },
-  tooltip: {
-    trigger: 'axis'
-  },
-  legend: {},
-  toolbox: {
-    show: true,
-    feature: {
-      dataZoom: {
-        yAxisIndex: 'none'
-      },
-      dataView: { readOnly: false },
-      magicType: { type: ['line', 'bar'] },
-      restore: {},
-      saveAsImage: {}
-    }
-  },
-  xAxis: {
-    type: 'category',
-    boundaryGap: false,
-    data: {{val|tojson}}
-  },
-  yAxis: {
-    type: 'value',
-    axisLabel: {
-      formatter: '{value} °C'
-    }
-  },
-  series: [
-    {
-      name: '最高温度',
-      type: 'line',
-      data: {{ num_high}},
-      markPoint: {
-        data: [
-          { type: 'max', name: 'Max' },
-          { type: 'min', name: 'Min' }
-        ]
-      },
-      markLine: {
-        data: [{ type: 'average', name: 'Avg' }]
-      }
-    },
-    {
-      name: '最低温度',
-      type: 'line',
-      data: {{ num_low}},
-      markPoint: {
-        data: [{ name: '最低', value: -2, xAxis: 1, yAxis: -1.5 }]
-      },
-      markLine: {
-        data: [
-          { type: 'average', name: 'Avg' },
-          [
-            {
-              symbol: 'none',
-              x: '90%',
-              yAxis: 'max'
+        option = {
+            title: {
+                text: '牡丹江近300天温度变化'
             },
-            {
-              symbol: 'circle',
-              label: {
-                position: 'start',
-                formatter: 'Max'
-              },
-              type: 'max',
-              name: '最高点'
-            }
-          ]
-        ]
-      }
-    }
-  ]
-};
+            tooltip: {
+                trigger: 'axis'
+            },
+            legend: {},
+            toolbox: {
+                show: true,
+                feature: {
+                    dataZoom: {
+                        yAxisIndex: 'none'
+                    },
+                    dataView: {readOnly: false},
+                    magicType: {type: ['line', 'bar']},
+                    restore: {},
+                    saveAsImage: {}
+                }
+            },
+            xAxis: {
+                type: 'category',
+                boundaryGap: false,
+                data: {{ val|tojson }}
+            },
+            yAxis: {
+                type: 'value',
+                axisLabel: {
+                    formatter: '{value} °C'
+                }
+            },
+            series: [
+                {
+                    name: '最高温度',
+                    type: 'line',
+                    data: {{ num_high|tojson|safe }},
+                    markPoint: {
+                        data: [
+                            {type: 'max', name: 'Max'},
+                            {type: 'min', name: 'Min'}
+                        ]
+                    },
+                    markLine: {
+                        data: [{type: 'average', name: 'Avg'}]
+                    }
+                },
+                {
+                    name: '最低温度',
+                    type: 'line',
+                    data: {{ num_low|tojson|safe }},
+                    markPoint: {
+                        data: [{name: '最低', value: -2, xAxis: 1, yAxis: -1.5}]
+                    },
+                    markLine: {
+                        data: [
+                            {type: 'average', name: 'Avg'},
+                            [{symbol: 'none', x: '90%', yAxis: 'max'}, {
+                                symbol: 'circle',
+                                label: {position: 'start', formatter: 'Max'},
+                                type: 'max',
+                                name: '最高点'
+                            }]
+                        ]
+                    }
+                }
+            ]
+        };
 
-option && myChart.setOption(option);
-</script>
-       
-    
-
-
-    
-
+        option && myChart.setOption(option);
+    </script>
 
 {% endblock %}
